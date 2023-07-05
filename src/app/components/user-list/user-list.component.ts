@@ -13,7 +13,7 @@ import { User } from '../../models/user.model';
 export class UserListComponent implements OnInit {
   users$: Observable<User[]> | undefined;
 
-  constructor(private store: Store<{ users: User[] }>) {}
+  constructor(private store: Store<any>) {}
 
   ngOnInit(): void {
     this.store.dispatch(new LoadUsersAction());
