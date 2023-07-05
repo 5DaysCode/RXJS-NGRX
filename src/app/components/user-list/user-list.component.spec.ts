@@ -5,11 +5,32 @@ import { UserListComponent } from './user-list.component';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { Store } from '@ngrx/store';
+import { LoadUsersAction } from '../../state/actions/user.actions';
+import { User } from 'src/app/models/user.model';
+
+// Here is where you should declare your mockUsers
+const mockUsers: User[] = [
+  {
+    id: 1,
+    name: 'User 1',
+    email: 'user1@email.com',
+    username: 'user1',
+    password: 'pass1',
+  },
+  {
+    id: 2,
+    name: 'User 2',
+    email: 'user2@email.com',
+    username: 'user2',
+    password: 'pass2',
+  },
+];
 
 describe('UserListComponent', () => {
   let component: UserListComponent;
   let fixture: ComponentFixture<UserListComponent>;
   let store: MockStore;
+  let spy: any;
   const initialState = { users: [] }; // Initialize to the state shape your app uses
 
   beforeEach(async(() => {
@@ -22,6 +43,9 @@ describe('UserListComponent', () => {
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
+
+    store = TestBed.inject(MockStore);
+    spy = jest.spyOn(store, 'dispatch').mockImplementation(() => {});
   }));
 
   beforeEach(() => {
@@ -35,5 +59,22 @@ describe('UserListComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  // Additional test cases...
+  it('should dispatch the load users action on init', () => {
+    fixture.detectChanges();
+    store.dispatch(new LoadUsersAction());
+    expect(spy).toHaveBeenCalledWith(new LoadUsersAction());
+  });
+
+  it('should have users observable', (done) => {
+    //mocking the store to return  predifined  users
+    store.setState({ users: mockUsers });
+
+    //detect changes when  oninit is triggered
+    fixture.detectChanges();
+
+    component.users$?.subscribe((users) => {
+      expect(users).toEqual(mockUsers);
+      done();
+    });
+  });
 });
