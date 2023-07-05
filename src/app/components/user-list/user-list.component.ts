@@ -1,7 +1,9 @@
-import { HttpErrorResponse } from '@angular/common/http';
+// src/app/components/user-list/user-list.component.ts
 import { Component, OnInit } from '@angular/core';
-import { User } from 'src/app/models/user.model';
-import { UserService } from 'src/app/services/user.service';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { LoadUsersAction } from '../../state/actions/user.actions';
+import { User } from '../../models/user.model';
 
 @Component({
   selector: 'app-user-list',
@@ -9,21 +11,12 @@ import { UserService } from 'src/app/services/user.service';
   styleUrls: ['./user-list.component.scss'],
 })
 export class UserListComponent implements OnInit {
-  users: User[] | undefined;
+  users$: Observable<User[]> | undefined;
 
-  constructor(private userService: UserService) {}
+  constructor(private store: Store<{ users: User[] }>) {}
 
   ngOnInit(): void {
-    this.getUsers();
-  }
-
-  getUsers(): void {
-    this.userService.getUsers().subscribe(
-      (users) => {
-        this.users = users;
-        console.log(this.users); // This line logs the users data to the console
-      },
-      (error: HttpErrorResponse) => console.error('There was an error!', error)
-    );
+    this.store.dispatch(new LoadUsersAction());
+    this.users$ = this.store.select('users');
   }
 }
