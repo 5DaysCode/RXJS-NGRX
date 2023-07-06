@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable, catchError, throwError } from 'rxjs';
+import { Observable, catchError, map, tap, throwError } from 'rxjs';
 import { User } from '../models/user.model';
 
 @Injectable({
@@ -15,6 +15,34 @@ export class UserService {
     return this.http
       .get<User[]>(this.apiUrl)
       .pipe(catchError(this.handleError));
+  }
+
+  getUserById(id: string): Observable<User> {
+    return this.http.get<User>(`${this.apiUrl}/${id}`).pipe(
+      map((user) => user), // Map the result
+      catchError(this.handleError)
+    );
+  }
+
+  createUser(user: User): Observable<User> {
+    return this.http.post<User>(this.apiUrl, user).pipe(
+      tap((newUser: User) => console.log(`Added user w/ id=${newUser.id}`)), // Log the result or perform another action
+      catchError(this.handleError)
+    );
+  }
+
+  updateUser(user: User): Observable<User> {
+    return this.http.put<User>(`${this.apiUrl}/${user.id}`, user).pipe(
+      tap((_) => console.log(`Updated user id=${user.id}`)), // Log the result or perform another action
+      catchError(this.handleError)
+    );
+  }
+
+  deleteUser(id: string): Observable<User> {
+    return this.http.delete<User>(`${this.apiUrl}/${id}`).pipe(
+      tap((_) => console.log(`Deleted user id=${id}`)), // Log the result or perform another action
+      catchError(this.handleError)
+    );
   }
 
   private handleError(error: HttpErrorResponse) {
