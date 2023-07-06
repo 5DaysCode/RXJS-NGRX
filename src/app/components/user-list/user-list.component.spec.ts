@@ -7,8 +7,9 @@ import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { Store } from '@ngrx/store';
 import { LoadUsersAction } from '../../state/actions/user.actions';
 import { User } from 'src/app/models/user.model';
+import { of } from 'rxjs';
+import { fakeAsync, tick } from '@angular/core/testing';
 
-// Here is where you should declare your mockUsers
 const mockUsers: User[] = [
   {
     id: 1,
@@ -30,8 +31,9 @@ describe('UserListComponent', () => {
   let component: UserListComponent;
   let fixture: ComponentFixture<UserListComponent>;
   let store: MockStore;
-  let spy: any;
-  const initialState = { users: [] }; // Initialize to the state shape your app uses
+  let dispatchSpy: any;
+  let selectSpy: any;
+  const initialState = { users: [] }; // Initialize to the state shape of users...
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -43,15 +45,29 @@ describe('UserListComponent', () => {
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
-
-    store = TestBed.inject(MockStore);
-    spy = jest.spyOn(store, 'dispatch').mockImplementation(() => {});
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(UserListComponent);
     component = fixture.componentInstance;
-    store = TestBed.inject(MockStore); // Inject the mock store
+
+    store = TestBed.inject(MockStore);
+    dispatchSpy = jest.spyOn(store, 'dispatch').mockImplementation(() => {});
+
+    selectSpy = jest.spyOn(store, 'select').mockImplementation((selector) => {
+      console.log('store.select is being called with:', selector);
+      if (typeof selector === 'string') {
+        console.log('string selector');
+        return of({ users: mockUsers });
+      } else if (typeof selector === 'function') {
+        console.log('function selector');
+        return of(selector({ users: mockUsers }));
+      } else {
+        console.log('Unexpected selector type');
+        throw new Error('Unexpected selector type');
+      }
+    });
+
     fixture.detectChanges();
   });
 
@@ -60,17 +76,31 @@ describe('UserListComponent', () => {
   });
 
   it('should dispatch the load users action on init', () => {
-    fixture.detectChanges();
     store.dispatch(new LoadUsersAction());
-    expect(spy).toHaveBeenCalledWith(new LoadUsersAction());
+    expect(dispatchSpy).toHaveBeenCalledWith(new LoadUsersAction());
   });
+
+  // it('should select users state', fakeAsync(() => {
+  //   fixture.detectChanges();
+  //   expect(selectSpy).toHaveBeenCalledWith('users');
+
+  //   tick();
+
+  //   fixture.detectChanges();
+
+  //   let usersResult: User[] | undefined;
+  //   component.users$?.subscribe((users) => {
+  //     usersResult = users;
+  //   });
+
+  //   tick();
+
+  //   expect(usersResult).toEqual(mockUsers);
+  // }));
 
   it('should have users observable', (done) => {
     //mocking the store to return  predifined  users
     store.setState({ users: mockUsers });
-
-    //detect changes when  oninit is triggered
-    fixture.detectChanges();
 
     component.users$?.subscribe((users) => {
       expect(users).toEqual(mockUsers);
