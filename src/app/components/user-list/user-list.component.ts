@@ -1,9 +1,11 @@
 // src/app/components/user-list/user-list.component.ts
 import { Component, OnInit } from '@angular/core';
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { LoadUsersAction } from '../../state/actions/user.actions';
 import { User } from '../../models/user.model';
+import { AppState } from '../../state/app.state';
+import { selectUsers } from '../../state/selectors/user.selectors';
 
 @Component({
   selector: 'app-user-list',
@@ -17,6 +19,6 @@ export class UserListComponent implements OnInit {
 
   ngOnInit(): void {
     this.store.dispatch(new LoadUsersAction());
-    this.users$ = this.store.select('users');
+    this.users$ = this.store.pipe(select(selectUsers));
   }
 }

@@ -11,6 +11,8 @@ import { provideMockStore, MockStore } from '@ngrx/store/testing';
 
 import { LoadUsersAction } from '../../state/actions/user.actions';
 import { User } from 'src/app/models/user.model';
+import { AppState } from '../../state/app.state';
+import * as fromUser from '../../state/selectors/user.selectors';
 
 const mockUsers: User[] = [
   {
@@ -32,7 +34,7 @@ const mockUsers: User[] = [
 describe('UserListComponent', () => {
   let component: UserListComponent;
   let fixture: ComponentFixture<UserListComponent>;
-  let store: MockStore<any>;
+  let store: MockStore<AppState>;
   const initialState = { users: [] };
 
   beforeEach(async(() => {
@@ -64,11 +66,13 @@ describe('UserListComponent', () => {
     expect(dispatchSpy).toHaveBeenCalledWith(new LoadUsersAction());
   }));
 
-  it('should select users state', fakeAsync(() => {
+  it('should select users state using selector', fakeAsync(() => {
+    const selectSpy = jest.spyOn(fromUser, 'selectUsers');
     component.ngOnInit();
     tick();
     if (component.users$) {
       component.users$.toPromise().then((users) => {
+        expect(selectSpy).toHaveBeenCalled();
         expect(users).toEqual(mockUsers);
       });
     }
