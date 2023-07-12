@@ -5,6 +5,12 @@ export enum UserActionTypes {
   LOAD_USERS = '[USER] Load Users',
   LOAD_USERS_SUCCESS = '[USER] Load Users Success',
   LOAD_USERS_FAILURE = '[USER] Load Users Failure',
+  ADD_USER = '[USER] Add User',
+  UPDATE_USER = '[USER] Update User',
+  ADD_USER_SUCCESS = '[USER] Add User Success',
+  ADD_USER_FAILURE = '[USER] Add User Failure',
+  UPDATE_USER_SUCCESS = '[USER] Update User Success',
+  UPDATE_USER_FAILURE = '[USER] Update User Failure',
 }
 
 export class LoadUsersAction implements Action {
@@ -22,7 +28,46 @@ export class LoadUsersFailureAction implements Action {
   constructor(public payload: Error) {}
 }
 
+export class AddUserAction implements Action {
+  readonly type = UserActionTypes.ADD_USER;
+
+  constructor(public payload: User) {}
+}
+
+export class UpdateUserAction implements Action {
+  readonly type = UserActionTypes.UPDATE_USER;
+
+  constructor(public payload: User) {}
+}
+
+export class AddUserSuccessAction implements Action {
+  readonly type = UserActionTypes.ADD_USER_SUCCESS;
+  constructor(public payload: User) {}
+}
+
+export class AddUserFailureAction implements Action {
+  readonly type = UserActionTypes.ADD_USER_FAILURE;
+  constructor(public payload: Error) {}
+}
+
+export class UpdateUserSuccessAction implements Action {
+  readonly type = UserActionTypes.UPDATE_USER_SUCCESS;
+  constructor(public payload: User) {}
+}
+
+export class UpdateUserFailureAction implements Action {
+  readonly type = UserActionTypes.UPDATE_USER_FAILURE;
+  constructor(public payload: Error) {}
+}
+
 export type UserAction =
   | LoadUsersAction
   | LoadUsersSuccessAction
-  | LoadUsersFailureAction;
+  | LoadUsersFailureAction
+  | AddUserAction
+  | UpdateUserAction
+  | AddUserSuccessAction
+  | AddUserFailureAction
+  | UpdateUserAction
+  | UpdateUserSuccessAction
+  | UpdateUserFailureAction;

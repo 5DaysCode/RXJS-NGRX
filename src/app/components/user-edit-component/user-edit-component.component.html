@@ -1,0 +1,22 @@
+<form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+  <label>
+    Name:
+    <input formControlName="name" type="text" placeholder="Name" />
+    <div *ngIf="hasError('name', 'required')">Name is required.</div>
+  </label>
+
+  <label>
+    Email:
+    <input formControlName="email" type="email" placeholder="Email" />
+    <div *ngIf="hasError('email', 'required')">Email is required.</div>
+    <div *ngIf="hasError('email', 'email')">Email is not valid.</div>
+  </label>
+
+  <label>
+    Username:
+    <input formControlName="username" type="text" placeholder="Username" />
+    <div *ngIf="hasError('username', 'required')">Username is required.</div>
+  </label>
+
+  <button type="submit" [disabled]="userForm.invalid">Submit</button>
+</form>
