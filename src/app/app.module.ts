@@ -14,9 +14,11 @@ import { AppState } from './state/app.state';
 import { UserAction } from './state/actions/user.actions';
 import { ReactiveFormsModule } from '@angular/forms';
 import { UserEditComponentComponent } from './components/user-edit-component/user-edit-component.component';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { environment } from '../../src/environments/environment';
 
 export const appReducers: ActionReducerMap<AppState, UserAction> = {
-  users: UserReducer,
+  user: UserReducer, // changed this line
 };
 
 const routes: Routes = [];
@@ -28,9 +30,18 @@ const routes: Routes = [];
     AppRoutingModule,
     RouterModule.forRoot(routes),
     HttpClientModule,
-    StoreModule.forRoot(appReducers),
+    StoreModule.forRoot(appReducers, {
+      runtimeChecks: {
+        strictStateImmutability: true,
+        strictActionImmutability: true,
+      },
+    }), // End StoreModule.forRoot
     EffectsModule.forRoot([UserEffects]),
     ReactiveFormsModule,
+    StoreDevtoolsModule.instrument({
+      maxAge: 25,
+      logOnly: environment.production,
+    }), // Move this line outside of StoreModule.forRoot
   ],
   providers: [],
   bootstrap: [AppComponent],

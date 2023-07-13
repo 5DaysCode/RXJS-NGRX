@@ -18,6 +18,7 @@ export class UserListComponent implements OnInit {
   constructor(private store: Store<any>) {}
 
   ngOnInit(): void {
+    console.log('OnInit');
     this.store.dispatch(new LoadUsersAction());
     this.users$ = this.store.pipe(select(selectUsers));
   }

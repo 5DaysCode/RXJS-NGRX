@@ -1,6 +1,6 @@
-// src/app/state/app.state.ts
-import { User } from '../models/user.model';
+import { UserState } from './reducers/user.reducer'; // assuming the path
 
 export interface AppState {
-  readonly users: User[];
+  user: UserState; // updated this line
+  // other state properties
 }
