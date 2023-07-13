@@ -16,11 +16,13 @@ export class UserService {
       .get<User[]>(this.apiUrl)
       .pipe(catchError(this.handleError));
   }
-
-  getUserById(id: number): Observable<User> {
+  getUserById(id: string): Observable<User> {
     return this.http.get<User>(`${this.apiUrl}/${id}`).pipe(
-      map((user) => user), // Map the result
-      catchError(this.handleError)
+      map((user) => user),
+      catchError((error) => {
+        console.log('An error occurred:', error);
+        return this.handleError(error); // You can also handle the error further if needed
+      })
     );
   }
 
