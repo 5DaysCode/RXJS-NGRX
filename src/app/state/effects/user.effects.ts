@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { UserService } from '../../services/user.service';
 import { Observable, of } from 'rxjs';
-import { catchError, map, mergeMap } from 'rxjs/operators';
+import { catchError, map, mergeMap, switchMap } from 'rxjs/operators';
 import {
   UserAction,
   UserActionTypes,
@@ -14,6 +14,8 @@ import {
   UpdateUserAction,
   UpdateUserSuccessAction,
   UpdateUserFailureAction,
+  AddUserSuccessAction,
+  AddUserFailureAction,
 } from '../actions/user.actions';
 import { User } from 'src/app/models/user.model';
 
@@ -68,6 +70,18 @@ export class UserEffects {
             catchError((error) => of(new UpdateUserFailureAction(error)))
           )
       )
+    )
+  );
+
+  AddUser$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(UserActionTypes.ADD_USER),
+      switchMap((action: any) => {
+        return this.userService.createUser(action.payload).pipe(
+          map((user: User) => new AddUserSuccessAction(user)),
+          catchError((error) => of(new AddUserFailureAction(error)))
+        );
+      })
     )
   );
 

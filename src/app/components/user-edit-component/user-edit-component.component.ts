@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {
   LoadUserAction,
   UpdateUserAction,
+  AddUserAction, // Import AddUserAction
 } from '../../state/actions/user.actions';
 import { AppState } from '../../state/app.state';
 import { Store, select } from '@ngrx/store';
@@ -25,7 +26,8 @@ import { Subject } from 'rxjs';
 export class UserEditComponentComponent implements OnInit, OnDestroy {
   userForm: FormGroup;
   private ngUnsubscribe = new Subject();
-  private userId: string | undefined; // Add this variable to store the user ID
+  private userId: string | undefined;
+  isEditMode = false; // Add this variable to distinguish between edit mode and add mode
 
   constructor(
     private fb: FormBuilder,
@@ -39,17 +41,18 @@ export class UserEditComponentComponent implements OnInit, OnDestroy {
       // ...other controls...
     });
   }
+
   ngOnInit(): void {
     this.route.params.subscribe((params: Params) => {
       this.userId = params['id'];
       if (this.userId) {
+        this.isEditMode = true;
         this.store.dispatch(new LoadUserAction(this.userId));
 
         this.store
           .pipe(select(selectCurrentUser), takeUntil(this.ngUnsubscribe))
           .subscribe((user: unknown) => {
             const typedUser = user as User | null;
-            console.log('USER from component', typedUser);
             if (typedUser) {
               this.userForm.patchValue(typedUser);
             }
@@ -72,14 +75,24 @@ export class UserEditComponentComponent implements OnInit, OnDestroy {
               // Handle update failure, show an error message
             }
           });
+      } else {
+        this.isEditMode = false;
+        this.userForm.reset(); // Clear the form for a new user
       }
     });
   }
 
   onSubmit(): void {
-    if (this.userForm.valid && this.userId) {
-      const changes = this.userForm.value;
-      this.store.dispatch(new UpdateUserAction({ id: this.userId, changes }));
+    if (this.userForm.valid) {
+      if (this.isEditMode && this.userId) {
+        alert('Editing');
+        const changes = this.userForm.value;
+        this.store.dispatch(new UpdateUserAction({ id: this.userId, changes }));
+      } else {
+        alert('Adding');
+        const newUser = this.userForm.value;
+        this.store.dispatch(new AddUserAction(newUser));
+      }
     }
   }
 

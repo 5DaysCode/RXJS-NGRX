@@ -25,7 +25,6 @@ export class UserService {
       })
     );
   }
-
   createUser(user: User): Observable<User> {
     return this.http.post<User>(this.apiUrl, user).pipe(
       tap((newUser: User) => console.log(`Added user w/ id=${newUser.id}`)), // Log the result or perform another action

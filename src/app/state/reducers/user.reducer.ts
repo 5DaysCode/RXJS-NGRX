@@ -6,6 +6,7 @@ export interface UserState {
   currentUser: User | null;
   updateUserSuccess: boolean;
   updateUserFailure: Error | null;
+  addUserFailure: Error | null; // Add this
 }
 
 export const initialState: UserState = {
@@ -13,6 +14,7 @@ export const initialState: UserState = {
   currentUser: null,
   updateUserSuccess: false,
   updateUserFailure: null,
+  addUserFailure: null, // And this
 };
 
 export function UserReducer(
@@ -27,7 +29,16 @@ export function UserReducer(
     case UserActionTypes.LOAD_USER_SUCCESS:
       return { ...state, currentUser: action.payload };
     case UserActionTypes.ADD_USER_SUCCESS:
-      return { ...state, users: [...state.users, action.payload] };
+      return {
+        ...state,
+        users: [...state.users, action.payload],
+        addUserFailure: null, // Clear any previous errors
+      };
+    case UserActionTypes.ADD_USER_FAILURE:
+      return {
+        ...state,
+        addUserFailure: action.payload, // Store the error if adding user fails
+      };
     case UserActionTypes.UPDATE_USER_SUCCESS:
       return {
         ...state,

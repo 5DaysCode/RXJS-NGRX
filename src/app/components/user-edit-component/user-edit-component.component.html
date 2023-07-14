@@ -18,5 +18,7 @@
     <div *ngIf="hasError('username', 'required')">Username is required.</div>
   </label>
 
-  <button type="submit" [disabled]="userForm.invalid">Submit</button>
+  <button type="submit" [disabled]="userForm.invalid">
+    {{ isEditMode ? "Update" : "Add" }}
+  </button>
 </form>

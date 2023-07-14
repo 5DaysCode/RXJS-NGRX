@@ -8,10 +8,15 @@
     },
     {
       "id": 2,
-      "name": "Jane Doe",
-      "email": "jane@example.com",
-      "username": "janedoe",
-      "password": "password"
+      "name": "Erwin",
+      "email": "erwa@erwa.com",
+      "username": "erwin"
+    },
+    {
+      "name": "Amra",
+      "email": "amra.talundzic@gmail.com",
+      "username": "amra",
+      "id": 3
     }
   ]
 }
