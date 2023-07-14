@@ -9,7 +9,12 @@ import { Store, select } from '@ngrx/store';
 import { ActivatedRoute, Params } from '@angular/router';
 import { takeUntil, tap } from 'rxjs/operators';
 import { User } from 'src/app/models/user.model';
-import { selectCurrentUser } from '../../state/selectors/user.selectors';
+import {
+  selectCurrentUser,
+  selectUpdateUserSuccess,
+  selectUpdateUserFailure,
+} from '../../state/selectors/user.selectors';
+
 import { Subject } from 'rxjs';
 
 @Component({
@@ -49,14 +54,32 @@ export class UserEditComponentComponent implements OnInit, OnDestroy {
               this.userForm.patchValue(typedUser);
             }
           });
+
+        this.store
+          .pipe(select(selectUpdateUserSuccess), takeUntil(this.ngUnsubscribe))
+          .subscribe((success: boolean) => {
+            if (success) {
+              console.log('Update successful');
+              // Handle update success, maybe redirect or show a success message
+            }
+          });
+
+        this.store
+          .pipe(select(selectUpdateUserFailure), takeUntil(this.ngUnsubscribe))
+          .subscribe((error: Error | null) => {
+            if (error) {
+              console.log('Update failed', error);
+              // Handle update failure, show an error message
+            }
+          });
       }
     });
   }
 
   onSubmit(): void {
     if (this.userForm.valid && this.userId) {
-      const updateUser = this.userForm.value;
-      this.store.dispatch(new UpdateUserAction(updateUser));
+      const changes = this.userForm.value;
+      this.store.dispatch(new UpdateUserAction({ id: this.userId, changes }));
     }
   }
 

@@ -26,3 +26,13 @@ export const selectCurrentUser = createSelector(
   (state: AppState) => state.user.currentUser,
   (currentUser) => currentUser
 );
+
+export const selectUpdateUserSuccess = createSelector(
+  (state: AppState) => state.user,
+  (user) => user.updateUserSuccess
+);
+
+export const selectUpdateUserFailure = createSelector(
+  (state: AppState) => state.user,
+  (user) => user.updateUserFailure
+);

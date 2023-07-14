@@ -11,7 +11,11 @@ import {
   LoadUserAction,
   LoadUserSuccessAction,
   LoadUserFailureAction,
+  UpdateUserAction,
+  UpdateUserSuccessAction,
+  UpdateUserFailureAction,
 } from '../actions/user.actions';
+import { User } from 'src/app/models/user.model';
 
 @Injectable()
 export class UserEffects {
@@ -44,6 +48,26 @@ export class UserEffects {
           })
         );
       })
+    )
+  );
+
+  UpdateUser$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType<UpdateUserAction>(UserActionTypes.UPDATE_USER),
+      mergeMap((action) =>
+        this.userService
+          .updateUser({ id: action.payload.id, ...action.payload.changes })
+          .pipe(
+            map(
+              (updatedUser: User) =>
+                new UpdateUserSuccessAction({
+                  id: updatedUser.id,
+                  changes: action.payload.changes,
+                })
+            ),
+            catchError((error) => of(new UpdateUserFailureAction(error)))
+          )
+      )
     )
   );
 

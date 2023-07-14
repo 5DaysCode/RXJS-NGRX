@@ -6,7 +6,7 @@ import { AppComponent } from './app.component';
 import { RouterModule, Routes } from '@angular/router';
 import { UserListComponent } from './components/user-list/user-list.component';
 import { HttpClientModule } from '@angular/common/http';
-import { EffectSources, EffectsModule } from '@ngrx/effects';
+import { EffectSources, EffectsModule, createEffect } from '@ngrx/effects';
 import { UserEffects } from './state/effects/user.effects';
 import { ActionReducerMap, StoreModule } from '@ngrx/store';
 import { UserReducer } from './state/reducers/user.reducer';

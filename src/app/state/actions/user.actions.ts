@@ -11,9 +11,9 @@ export enum UserActionTypes {
   ADD_USER_FAILURE = '[USER] Add User Failure',
   UPDATE_USER_SUCCESS = '[USER] Update User Success',
   UPDATE_USER_FAILURE = '[USER] Update User Failure',
-  LOAD_USER = '[USER] Load User', // New
-  LOAD_USER_SUCCESS = '[USER] Load User Success', // New
-  LOAD_USER_FAILURE = '[USER] Load User Failure', // New
+  LOAD_USER = '[USER] Load User',
+  LOAD_USER_SUCCESS = '[USER] Load User Success',
+  LOAD_USER_FAILURE = '[USER] Load User Failure',
 }
 
 export class LoadUsersAction implements Action {
@@ -22,7 +22,6 @@ export class LoadUsersAction implements Action {
 
 export class LoadUsersSuccessAction implements Action {
   readonly type = UserActionTypes.LOAD_USERS_SUCCESS;
-
   constructor(public payload: Array<User>) {}
 }
 
@@ -33,14 +32,12 @@ export class LoadUsersFailureAction implements Action {
 
 export class AddUserAction implements Action {
   readonly type = UserActionTypes.ADD_USER;
-
   constructor(public payload: User) {}
 }
 
 export class UpdateUserAction implements Action {
   readonly type = UserActionTypes.UPDATE_USER;
-
-  constructor(public payload: User) {}
+  constructor(public payload: { id: string; changes: Partial<User> }) {}
 }
 
 export class AddUserSuccessAction implements Action {
@@ -55,7 +52,7 @@ export class AddUserFailureAction implements Action {
 
 export class UpdateUserSuccessAction implements Action {
   readonly type = UserActionTypes.UPDATE_USER_SUCCESS;
-  constructor(public payload: User) {}
+  constructor(public payload: { id: string; changes: Partial<User> }) {}
 }
 
 export class UpdateUserFailureAction implements Action {
@@ -63,22 +60,18 @@ export class UpdateUserFailureAction implements Action {
   constructor(public payload: Error) {}
 }
 
-// New actions
 export class LoadUserAction implements Action {
   readonly type = UserActionTypes.LOAD_USER;
-
   constructor(public payload: string) {}
 }
 
 export class LoadUserSuccessAction implements Action {
   readonly type = UserActionTypes.LOAD_USER_SUCCESS;
-
   constructor(public payload: User) {}
 }
 
 export class LoadUserFailureAction implements Action {
   readonly type = UserActionTypes.LOAD_USER_FAILURE;
-
   constructor(public payload: Error) {}
 }
 
@@ -90,7 +83,6 @@ export type UserAction =
   | UpdateUserAction
   | AddUserSuccessAction
   | AddUserFailureAction
-  | UpdateUserAction
   | UpdateUserSuccessAction
   | UpdateUserFailureAction
   | LoadUserAction

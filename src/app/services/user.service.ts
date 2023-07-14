@@ -33,7 +33,7 @@ export class UserService {
     );
   }
 
-  updateUser(user: User): Observable<User> {
+  updateUser(user: Partial<User>): Observable<User> {
     return this.http.put<User>(`${this.apiUrl}/${user.id}`, user).pipe(
       tap((_) => console.log(`Updated user id=${user.id}`)), // Log the result or perform another action
       catchError(this.handleError)
