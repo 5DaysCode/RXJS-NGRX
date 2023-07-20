@@ -4,7 +4,7 @@
       "id": 1,
       "name": "Alem Bristric",
       "email": "alem.bristric@gmail.com",
-      "username": "AB"
+      "username": "ABXXX"
     },
     {
       "id": 2,
@@ -17,6 +17,12 @@
       "email": "amra.talundzic@gmail.com",
       "username": "amra",
       "id": 3
+    },
+    {
+      "name": "fda",
+      "email": "alem.bristric@gmail.com",
+      "username": "f",
+      "id": 4
     }
   ]
 }
