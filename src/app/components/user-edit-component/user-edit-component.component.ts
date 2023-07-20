@@ -38,7 +38,6 @@ export class UserEditComponentComponent implements OnInit, OnDestroy {
       name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       username: ['', Validators.required],
-      // ...other controls...
     });
   }
 
