@@ -6,7 +6,10 @@ export interface UserState {
   currentUser: User | null;
   updateUserSuccess: boolean;
   updateUserFailure: Error | null;
-  addUserFailure: Error | null; // Add this
+  addUserFailure: Error | null;
+  deleteUserSuccess: boolean; // Add this
+  deleteUserFailure: Error | null; // Add this
+  loading: boolean; // Add this
 }
 
 export const initialState: UserState = {
@@ -14,7 +17,10 @@ export const initialState: UserState = {
   currentUser: null,
   updateUserSuccess: false,
   updateUserFailure: null,
-  addUserFailure: null, // And this
+  addUserFailure: null,
+  deleteUserSuccess: false, // And this
+  deleteUserFailure: null, // And this
+  loading: false, // And this
 };
 
 export function UserReducer(
@@ -32,12 +38,12 @@ export function UserReducer(
       return {
         ...state,
         users: [...state.users, action.payload],
-        addUserFailure: null, // Clear any previous errors
+        addUserFailure: null,
       };
     case UserActionTypes.ADD_USER_FAILURE:
       return {
         ...state,
-        addUserFailure: action.payload, // Store the error if adding user fails
+        addUserFailure: action.payload,
       };
     case UserActionTypes.UPDATE_USER_SUCCESS:
       return {
@@ -58,6 +64,26 @@ export function UserReducer(
       };
     case UserActionTypes.LOAD_USERS_FAILURE:
       return { ...state, users: [], currentUser: null };
+    case UserActionTypes.DELETE_USER:
+      return {
+        ...state,
+        loading: true,
+      };
+    case UserActionTypes.DELETE_USER_SUCCESS:
+      return {
+        ...state,
+        users: state.users.filter((user) => user.id !== action.payload),
+        loading: false,
+        deleteUserSuccess: true,
+        deleteUserFailure: null,
+      };
+    case UserActionTypes.DELETE_USER_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        deleteUserSuccess: false,
+        deleteUserFailure: action.payload,
+      };
     default:
       return state;
   }

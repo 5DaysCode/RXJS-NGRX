@@ -3,7 +3,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {
   LoadUserAction,
   UpdateUserAction,
-  AddUserAction, // Import AddUserAction
+  AddUserAction,
+  DeleteUserAction,
 } from '../../state/actions/user.actions';
 import { AppState } from '../../state/app.state';
 import { Store, select } from '@ngrx/store';
@@ -26,7 +27,7 @@ import { Subject } from 'rxjs';
 export class UserEditComponentComponent implements OnInit, OnDestroy {
   userForm: FormGroup;
   private ngUnsubscribe = new Subject();
-  private userId: string | undefined;
+  public userId: string | undefined;
   isEditMode = false; // Add this variable to distinguish between edit mode and add mode
 
   constructor(
@@ -92,6 +93,13 @@ export class UserEditComponentComponent implements OnInit, OnDestroy {
         const newUser = this.userForm.value;
         this.store.dispatch(new AddUserAction(newUser));
       }
+    }
+  }
+
+  onDelete() {
+    console.log('Deleting');
+    if (this.userId) {
+      this.store.dispatch(new DeleteUserAction(this.userId));
     }
   }
 

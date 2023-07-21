@@ -6,7 +6,11 @@ import { ReactiveFormsModule } from '@angular/forms';
 
 import { UserEditComponentComponent } from './user-edit-component.component';
 import { of } from 'rxjs';
-import { AddUserAction } from '../../state/actions/user.actions';
+import {
+  AddUserAction,
+  UpdateUserAction,
+} from '../../state/actions/user.actions';
+import { selectCurrentUser } from '../../state/selectors/user.selectors';
 
 describe('UserEditComponentComponent', () => {
   let component: UserEditComponentComponent;
@@ -42,6 +46,8 @@ describe('UserEditComponentComponent', () => {
   });
 
   beforeEach(() => {
+    // Mock window.alert
+    window.alert = jest.fn();
     fixture = TestBed.createComponent(UserEditComponentComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -98,5 +104,65 @@ describe('UserEditComponentComponent', () => {
 
     control?.setValue('alem@example.com');
     expect(control?.valid).toBeTruthy();
+  });
+
+  it('should dispatch AddUserAction or UpdateUserAction on form submit', () => {
+    // Spy on the store's dispatch method
+    const dispatchSpy = jest.spyOn(store, 'dispatch');
+
+    // Case when adding a new user
+    component.isEditMode = false;
+    const newUser = {
+      name: 'Erwin Bristric',
+      email: 'erwin@erwindomain.com',
+      username: 'erwin',
+    };
+    component.userForm.patchValue(newUser);
+    component.onSubmit();
+    expect(dispatchSpy).toHaveBeenCalledWith(new AddUserAction(newUser));
+    dispatchSpy.mockClear();
+
+    //Case when editing /updating the user
+    component.isEditMode = true; // now we are in editing mode
+    component.userId = '1'; // setting userId for update
+
+    expect(component.isEditMode).toBeTruthy();
+    expect(component.userId).toEqual('1');
+
+    const existingUser = {
+      name: 'Elma Bristric',
+      email: 'elma@elmasdomain.com',
+      username: 'elma',
+    };
+
+    const updateUser = {
+      id: '1',
+      changes: existingUser,
+    };
+
+    component.userForm.patchValue(existingUser);
+    component.onSubmit();
+    expect(dispatchSpy).toHaveBeenCalledWith(new UpdateUserAction(updateUser));
+  });
+
+  it('should populate form if user load is successful', () => {
+    const user = {
+      id: '1',
+      name: 'Elma Bristric',
+      username: 'elma',
+      email: 'elma@elmasdomain.com',
+      password: 'password', // Add this line
+    };
+
+    store.overrideSelector(selectCurrentUser, user);
+    store.refreshState();
+
+    component.ngOnInit();
+
+    expect(component.userForm.controls['name'].value).toEqual(user.name); // Change these lines
+    expect(component.userForm.controls['email'].value).toEqual(user.email);
+    expect(component.userForm.controls['username'].value).toEqual(
+      user.username
+    );
   });
 });

@@ -16,6 +16,9 @@ import {
   UpdateUserFailureAction,
   AddUserSuccessAction,
   AddUserFailureAction,
+  DeleteUserAction,
+  DeleteUserSuccessAction,
+  DeleteUserFailureAction,
 } from '../actions/user.actions';
 import { User } from 'src/app/models/user.model';
 
@@ -82,6 +85,17 @@ export class UserEffects {
           catchError((error) => of(new AddUserFailureAction(error)))
         );
       })
+    )
+  );
+  deleteUser$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(UserActionTypes.DELETE_USER),
+      mergeMap((action: DeleteUserAction) =>
+        this.userService.deleteUser(action.payload).pipe(
+          map(() => new DeleteUserSuccessAction(action.payload)),
+          catchError((error) => of(new DeleteUserFailureAction(error)))
+        )
+      )
     )
   );
 

@@ -1,4 +1,4 @@
-import { Action } from '@ngrx/store';
+import { Action, createAction, props } from '@ngrx/store';
 import { User } from '../../models/user.model';
 
 export enum UserActionTypes {
@@ -14,6 +14,10 @@ export enum UserActionTypes {
   LOAD_USER = '[USER] Load User',
   LOAD_USER_SUCCESS = '[USER] Load User Success',
   LOAD_USER_FAILURE = '[USER] Load User Failure',
+
+  DELETE_USER = '[USER]  Delete User',
+  DELETE_USER_SUCCESS = '[USER] Delete User Success',
+  DELETE_USER_FAILURE = '[USER] Delete User Failure',
 }
 
 export class LoadUsersAction implements Action {
@@ -32,7 +36,7 @@ export class LoadUsersFailureAction implements Action {
 
 export class AddUserAction implements Action {
   readonly type = UserActionTypes.ADD_USER;
-  constructor(public payload: User) {}
+  constructor(public payload: Partial<User>) {}
 }
 
 export class UpdateUserAction implements Action {
@@ -75,6 +79,20 @@ export class LoadUserFailureAction implements Action {
   constructor(public payload: Error) {}
 }
 
+export class DeleteUserAction implements Action {
+  readonly type = UserActionTypes.DELETE_USER;
+  constructor(public payload: string) {}
+}
+
+export class DeleteUserSuccessAction implements Action {
+  readonly type = UserActionTypes.DELETE_USER_SUCCESS;
+  constructor(public payload: string) {} // payload should be the user id.
+}
+export class DeleteUserFailureAction implements Action {
+  readonly type = UserActionTypes.DELETE_USER_FAILURE;
+  constructor(public payload: Error) {}
+}
+
 export type UserAction =
   | LoadUsersAction
   | LoadUsersSuccessAction
@@ -87,4 +105,7 @@ export type UserAction =
   | UpdateUserFailureAction
   | LoadUserAction
   | LoadUserSuccessAction
-  | LoadUserFailureAction;
+  | LoadUserFailureAction
+  | DeleteUserAction
+  | DeleteUserSuccessAction
+  | DeleteUserFailureAction;
