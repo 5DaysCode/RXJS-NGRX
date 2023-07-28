@@ -8,6 +8,7 @@ import { UserEditComponentComponent } from './user-edit-component.component';
 import { of } from 'rxjs';
 import {
   AddUserAction,
+  DeleteUserAction,
   UpdateUserAction,
 } from '../../state/actions/user.actions';
 import { selectCurrentUser } from '../../state/selectors/user.selectors';
@@ -151,7 +152,7 @@ describe('UserEditComponentComponent', () => {
       name: 'Elma Bristric',
       username: 'elma',
       email: 'elma@elmasdomain.com',
-      password: 'password', // Add this line
+      password: 'password',
     };
 
     store.overrideSelector(selectCurrentUser, user);
@@ -159,10 +160,20 @@ describe('UserEditComponentComponent', () => {
 
     component.ngOnInit();
 
-    expect(component.userForm.controls['name'].value).toEqual(user.name); // Change these lines
+    expect(component.userForm.controls['name'].value).toEqual(user.name);
     expect(component.userForm.controls['email'].value).toEqual(user.email);
     expect(component.userForm.controls['username'].value).toEqual(
       user.username
     );
+  });
+
+  it('should dispatch DeleteUserAction on delete', () => {
+    //Spy on the store's dispatch method
+
+    const dispatchSpy = jest.spyOn(store, 'dispatch');
+
+    component.userId = '1';
+    component.onDelete();
+    expect(dispatchSpy).toHaveBeenCalledWith(new DeleteUserAction('1'));
   });
 });
